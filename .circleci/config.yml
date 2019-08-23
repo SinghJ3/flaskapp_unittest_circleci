@@ -19,6 +19,6 @@ jobs:
 
     steps:
       - checkout
-      - run: pip install -r requirement.txt
+      - run: sudo pip install -r requirement.txt
       - run: python test_svc_controller.py
 
