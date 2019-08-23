@@ -20,7 +20,7 @@ class TestSVCController(unittest.TestCase):
                 # headers = headers
             )
 
-            self.assertEqual(result.status_code,200)
+            self.assertEqual(result.status_code, 200)
 
 if __name__ == "__main__":
     unittest.main()
