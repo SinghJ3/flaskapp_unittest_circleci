@@ -9,16 +9,62 @@ jobs:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
       - image: circleci/python:3.6.8
-
+    environment:
+          FLASK_CONFIG: testing
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
 
-    # working_directory: ~/repo
+    # # Change work directory back to the root
+    #   working_directory: /
 
+    # # Create application service directory
+    #   - run: mkdir /usr/local/ma-is-svcs-excelprep
+    # # Copy application service files 
+    #   - working_directory: /usr/local/ma-is-svcs-excelprep/
     steps:
       - checkout
-      - run: sudo pip install -r requirement.txt
-      - run: python test_svc_controller.py
+      - run:
+          name: Setup VirtualEnv
+          command: |
+            echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> $BASH_ENV
+            echo 'export IMAGE_NAME=python-circleci-docker' >> $BASH_ENV 
+            sudo pip install --no-cache-dir -r requirements.txt
+      - run:
+          name: Run Tests
+          command: |
+            python test_svc_controller.py
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build and push Docker image
+          command: |
+            pyinstaller -F controller/svc_controller.py
+            docker build -t $IMAGE_NAME:$TAG .
+            # echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+            # docker push ariv3ra/$IMAGE_NAME:$TAG
+  # deploy:
+  #   docker:
+  #     - image: circleci/python:3.6.8
+  #   working_directory: ~/circleci-docs
+  #   steps:
+  #     - run:
+  #         name: Install awscli
+  #         command: sudo pip install awscli
+  #     - run:
+  #         name: Deploy to S3
+  #         command: aws s3 sync jekyll/_site/docs s3://circle-production-static-site/docs/ --delete
+
+# workflows:
+#   version: 2
+#   build-deploy:
+#     jobs:
+#       - build
+#       - deploy:
+#           requires:
+#             - build
+#           filters:
+#             branches:
+#               only: master
 
