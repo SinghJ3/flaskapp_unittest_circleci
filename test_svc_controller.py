@@ -1,7 +1,7 @@
 import unittest
 from controller.svc_controller import app, wrap_html
 
-class TestHelloWorld(unittest.TestCase):
+class TestSVCController(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
@@ -14,7 +14,7 @@ class TestHelloWorld(unittest.TestCase):
     def test_message(self):
         response = self.app.get('/')
         message = wrap_html('Hello DockerCon 2019!')
-        self.assertEqual(response.data, message)
+        self.assertEqual(response.data.decode("utf-8"), message)
 
 if __name__ == '__main__':
     unittest.main()
