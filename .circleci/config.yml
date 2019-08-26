@@ -40,7 +40,7 @@ jobs:
       - run:
           name: Build and push Docker image
           command: |
-            pyinstaller -F controller/svc_controller.py
+            # pyinstaller -F controller/svc_controller.py
             docker build -t $IMAGE_NAME:$TAG .
             # echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             # docker push ariv3ra/$IMAGE_NAME:$TAG
